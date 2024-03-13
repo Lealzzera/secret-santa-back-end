@@ -12,4 +12,6 @@ router.get("/ping", auth.validate, (req, res) => {
 
 router.get("/events", auth.validate, events.getAll);
 
+router.get("/events/:id", auth.validate, events.getEvent);
+
 export default router;
