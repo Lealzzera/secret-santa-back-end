@@ -17,3 +17,14 @@ export const login: RequestHandler = (req, res) => {
 
 	return res.status(403).json({ error: "Acesso negado" });
 };
+
+export const validate: RequestHandler = (req, res, next) => {
+	if (!req.headers.authorization) {
+		return res.status(403).json({ error: "Acesso negado" });
+	}
+	const token = req.headers.authorization.split("Bearer ").join("");
+	if (!auth.validateToken(token)) {
+		res.status(403).json({ error: "Acesso negado - Invalid token" });
+	}
+	next();
+};
