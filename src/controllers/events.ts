@@ -6,8 +6,9 @@ export const getAll: RequestHandler = async (req, res) => {
 	const items = await events.getAll();
 	if (items) {
 		return res.json({ events: items });
+	} else {
+		return res.json({ error: "Ocorreu um erro" });
 	}
-	return res.json({ error: "Ocorreu um erro" });
 };
 
 export const getEvent: RequestHandler = async (req, res) => {
@@ -15,8 +16,9 @@ export const getEvent: RequestHandler = async (req, res) => {
 	const eventItem = await events.getEventById(+id);
 	if (eventItem) {
 		return res.json({ event: eventItem });
+	} else {
+		return res.json({ error: "Não foi encontrado nenhum evento" });
 	}
-	return res.json({ error: "Não foi encontrado nenhum evento" });
 };
 
 export const createEvent: RequestHandler = async (req, res) => {
@@ -30,11 +32,13 @@ export const createEvent: RequestHandler = async (req, res) => {
 	if (!body.success)
 		return res.json({ error: "Erro ao criar o evento, dados inválidos" });
 	const newEvent = await events.createEvent(body.data);
-	if (newEvent)
+	if (newEvent) {
 		return res
 			.status(210)
 			.json({ success: "Evento criado com sucesso", event: newEvent });
-	res.json({ error: "Ocorreu um erro" });
+	} else {
+		res.json({ error: "Ocorreu um erro" });
+	}
 };
 
 type EventUpdated = {
@@ -70,17 +74,22 @@ export const updateEvent: RequestHandler = async (req, res) => {
 			success: "Dados alterados com sucesso",
 			event: updatedEvent,
 		});
+	} else {
+		return res.json({
+			error: `Ocorreu um erro ao atualizar o evento id: ${id}`,
+		});
 	}
-	return res.json({ error: `Ocorreu um erro ao atualizar o evento id: ${id}` });
 };
 
 export const deleteEvent: RequestHandler = async (req, res) => {
 	const { id } = req.params;
 	const deletedEvent = await events.deleteEventById(+id);
-	if (deletedEvent)
+	if (deletedEvent) {
 		return res.json({
 			success: "Evento excluído com sucesso!",
 			event: deletedEvent,
 		});
-	res.json({ error: `Ocorreu um erro ao deletar o evento id: ${id}` });
+	} else {
+		res.json({ error: `Ocorreu um erro ao deletar o evento id: ${id}` });
+	}
 };

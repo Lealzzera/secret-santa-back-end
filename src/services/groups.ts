@@ -14,3 +14,13 @@ export const getAllGroups = async (idEvent: number) => {
 		return err;
 	}
 };
+type GetOneGroupFilters = { id: number; id_event?: number };
+export const getOneGroup = async (filters: GetOneGroupFilters) => {
+	try {
+		return await prisma.eventGroup.findFirst({
+			where: filters,
+		});
+	} catch (err) {
+		return err;
+	}
+};
