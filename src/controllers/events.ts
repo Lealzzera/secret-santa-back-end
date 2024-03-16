@@ -29,15 +29,17 @@ export const createEvent: RequestHandler = async (req, res) => {
 	});
 
 	const body = createEventSchema.safeParse(req.body);
-	if (!body.success)
+	if (!body.success) {
 		return res.json({ error: "Erro ao criar o evento, dados inválidos" });
-	const newEvent = await events.createEvent(body.data);
-	if (newEvent) {
-		return res
-			.status(210)
-			.json({ success: "Evento criado com sucesso", event: newEvent });
 	} else {
-		res.json({ error: "Ocorreu um erro" });
+		const newEvent = await events.createEvent(body.data);
+		if (newEvent) {
+			return res
+				.status(210)
+				.json({ success: "Evento criado com sucesso", event: newEvent });
+		} else {
+			res.json({ error: "Ocorreu um erro" });
+		}
 	}
 };
 
