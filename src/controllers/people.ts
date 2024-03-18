@@ -51,3 +51,41 @@ export const addPerson: RequestHandler = async (req, res) => {
 		}
 	}
 };
+
+export const updatePerson: RequestHandler = async (req, res) => {
+	const { id_event, id_group, id } = req.params;
+	const updatePersonSchema = z.object({
+		name: z.string().optional(),
+		cpf: z
+			.string()
+			.transform((val) => val.replace(/\.|-/gm, ""))
+			.optional(),
+		matched: z.string().optional(),
+	});
+	const body = updatePersonSchema.safeParse(req.body);
+	if (!body.success) {
+		return res.json({ error: "Dados inválidos" });
+	} else {
+		const updatedPerson = await people.updatePersonService(
+			{
+				id_event: +id_event,
+				id_group: +id_group,
+				id: +id,
+			},
+			body.data
+		);
+		if (updatedPerson) {
+			const personItem = await people.getPersonService({
+				idEvent: +id_event,
+				idGroup: +id_group,
+				id: +id,
+			});
+			return res.json({
+				success: "Usuário alterado com sucesso",
+				person: personItem,
+			});
+		} else {
+			return res.json({ error: "Ocorreu um erro ao atualizar o usuário." });
+		}
+	}
+};

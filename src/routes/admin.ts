@@ -44,5 +44,10 @@ router.post(
 	auth.validate,
 	people.addPerson
 );
+router.put(
+	"/events/:id_event/groups/:id_group/people/:id",
+	auth.validate,
+	people.updatePerson
+);
 
 export default router;
