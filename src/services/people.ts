@@ -15,3 +15,29 @@ export const getAllPeopleService = async (idEvent: number, idGroup: number) => {
 		return { err };
 	}
 };
+
+type GetPersonServiceFilters = {
+	idEvent: number;
+	idGroup?: number;
+	id?: number;
+	cpf?: string;
+};
+export const getPersonService = async (filters: GetPersonServiceFilters) => {
+	try {
+		if (!filters.id && !filters.cpf) {
+			return false;
+		} else {
+			const personFound = await prisma.eventPeople.findFirst({
+				where: {
+					id_event: filters.idEvent,
+					id_group: filters.idGroup,
+					id: filters.id,
+					cpf: filters.cpf,
+				},
+			});
+			return personFound;
+		}
+	} catch (err) {
+		return { err };
+	}
+};
