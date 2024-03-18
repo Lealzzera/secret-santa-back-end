@@ -44,3 +44,52 @@ export const addGroup: RequestHandler = async (req, res) => {
 		}
 	}
 };
+
+export const updateGroup: RequestHandler = async (req, res) => {
+	const { id_event, id } = req.params;
+	const updateGroupSchema = z.object({
+		name: z.string().optional(),
+	});
+	const body = updateGroupSchema.safeParse(req.body);
+	if (!body.success) {
+		res.json({ error: "Ocorreu um erro ao atualizar o nome do grupo" });
+	} else {
+		const updatedGroup = await groups.updateGroupService(
+			{
+				id: +id,
+				id_event: +id_event,
+			},
+			body.data
+		);
+		if (updatedGroup) {
+			return res.json({
+				success: "Grupo alterado com sucesso",
+				group: updatedGroup,
+			});
+		} else {
+			return res.json({ error: "Ocorreu um erro para alterar o grupo" });
+		}
+	}
+};
+
+type GroupDeleted = {
+	id: number;
+	id_event: number;
+	name: string;
+};
+
+export const deleteGroup: RequestHandler = async (req, res) => {
+	const { id_event, id } = req.params;
+	const groupDeleted = (await groups.deleteGroupService(
+		+id_event,
+		+id
+	)) as GroupDeleted;
+	if (groupDeleted.name) {
+		return res.json({
+			success: "Grupo excluído com sucesso",
+			group: groupDeleted,
+		});
+	} else {
+		return res.json({ error: "Ocorreu um erro ao deletar o grupo" });
+	}
+};

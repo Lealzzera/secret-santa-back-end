@@ -60,26 +60,28 @@ export const updateEvent: RequestHandler = async (req, res) => {
 		grouped: z.boolean().optional(),
 	});
 	const body = updateEventSchema.safeParse(req.body);
-	if (!body.success) return res.json({ error: "Dados inválidos" });
-
-	const updatedEvent = (await events.updateEvent(
-		parseInt(id),
-		body.data
-	)) as EventUpdated;
-	if (updatedEvent) {
-		if (updatedEvent.status) {
-			//TODO: FAZER O SORTEIO
-		} else {
-			//TODO: Limpar o sorteio
-		}
-		return res.json({
-			success: "Dados alterados com sucesso",
-			event: updatedEvent,
-		});
+	if (!body.success) {
+		return res.json({ error: "Dados inválidos" });
 	} else {
-		return res.json({
-			error: `Ocorreu um erro ao atualizar o evento id: ${id}`,
-		});
+		const updatedEvent = (await events.updateEvent(
+			parseInt(id),
+			body.data
+		)) as EventUpdated;
+		if (updatedEvent) {
+			if (updatedEvent.status) {
+				//TODO: FAZER O SORTEIO
+			} else {
+				//TODO: Limpar o sorteio
+			}
+			return res.json({
+				success: "Dados alterados com sucesso",
+				event: updatedEvent,
+			});
+		} else {
+			return res.json({
+				error: `Ocorreu um erro ao atualizar o evento id: ${id}`,
+			});
+		}
 	}
 };
 

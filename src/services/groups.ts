@@ -37,10 +37,40 @@ export const addGroup = async (data: GroupsCreateData) => {
 			if (!eventItem) {
 				return false;
 			} else {
+				console.log({ data });
 				return await prisma.eventGroup.create({ data });
 			}
 		}
 	} catch (err) {
+		return { error: "Deu error no catch", err };
+	}
+};
+
+type UpdateFilters = { id: number; id_event?: number };
+type GroupsUpdateData = Prisma.Args<typeof prisma.eventGroup, "update">["data"];
+export const updateGroupService = async (
+	filters: UpdateFilters,
+	data: GroupsUpdateData
+) => {
+	try {
+		return await prisma.eventGroup.update({
+			where: filters,
+			data,
+		});
+	} catch (err) {
 		return err;
+	}
+};
+
+export const deleteGroupService = async (idEvent: number, idGroup: number) => {
+	try {
+		return await prisma.eventGroup.delete({
+			where: {
+				id_event: idEvent,
+				id: idGroup,
+			},
+		});
+	} catch (err) {
+		return { err };
 	}
 };
