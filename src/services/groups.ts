@@ -37,7 +37,6 @@ export const addGroup = async (data: GroupsCreateData) => {
 			if (!eventItem) {
 				return false;
 			} else {
-				console.log({ data });
 				return await prisma.eventGroup.create({ data });
 			}
 		}

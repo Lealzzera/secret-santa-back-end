@@ -1,4 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import * as events from "./events";
+import * as groups from "./groups";
 
 const prisma = new PrismaClient();
 
@@ -36,6 +38,31 @@ export const getPersonService = async (filters: GetPersonServiceFilters) => {
 				},
 			});
 			return personFound;
+		}
+	} catch (err) {
+		return { err };
+	}
+};
+
+type PersonCreateData = Prisma.Args<
+	typeof prisma.eventPeople,
+	"create"
+>["data"];
+export const addPersonService = async (data: PersonCreateData) => {
+	try {
+		if (!data.id_event && !data.id_group) {
+			return false;
+		} else {
+			const event = await events.getEventById(data.id_event);
+			const group = await groups.getOneGroup({
+				id: data.id_group,
+				id_event: data.id_event,
+			});
+			if (!event && !group) {
+				return false;
+			} else {
+				return await prisma.eventPeople.create({ data });
+			}
 		}
 	} catch (err) {
 		return { err };
