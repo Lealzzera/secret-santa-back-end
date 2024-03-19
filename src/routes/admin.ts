@@ -29,11 +29,13 @@ router.delete(
 	groups.deleteGroup
 );
 
+router.get("/events/:id_event/people", auth.validate, people.getAll);
 router.get(
 	"/events/:id_event/groups/:id_group/people",
 	auth.validate,
-	people.getAll
+	people.getAllPeopleByGroup
 );
+
 router.get(
 	"/events/:id_event/groups/:id_group/person/:id",
 	auth.validate,

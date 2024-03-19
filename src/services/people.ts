@@ -4,12 +4,28 @@ import * as groups from "./groups";
 
 const prisma = new PrismaClient();
 
-export const getAllPeopleService = async (idEvent: number, idGroup: number) => {
+export const getAllPeopleService = async (idEvent: number) => {
 	try {
 		const peopleFound = await prisma.eventPeople.findMany({
 			where: {
-				id_group: idGroup,
 				id_event: idEvent,
+			},
+		});
+		return peopleFound;
+	} catch (err) {
+		return { err };
+	}
+};
+
+export const getAllPeopleByGroupService = async (
+	idEvent: number,
+	idGroup: number
+) => {
+	try {
+		const peopleFound = await prisma.eventPeople.findMany({
+			where: {
+				id_event: idEvent,
+				id_group: idGroup,
 			},
 		});
 		return peopleFound;

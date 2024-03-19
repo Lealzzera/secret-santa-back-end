@@ -3,8 +3,21 @@ import * as people from "../services/people";
 import { z } from "zod";
 
 export const getAll: RequestHandler = async (req, res) => {
+	const { id_event } = req.params;
+	const peopleFound = await people.getAllPeopleService(+id_event);
+	if (peopleFound) {
+		return res.json({ people: peopleFound });
+	} else {
+		return res.json({ error: "Ocorreu um erro ao encontrar as pessoas" });
+	}
+};
+
+export const getAllPeopleByGroup: RequestHandler = async (req, res) => {
 	const { id_event, id_group } = req.params;
-	const peopleFound = await people.getAllPeopleService(+id_event, +id_group);
+	const peopleFound = await people.getAllPeopleByGroupService(
+		+id_event,
+		+id_group
+	);
 	if (peopleFound) {
 		return res.json({ people: peopleFound });
 	} else {
