@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import * as people from "../services/people";
 import { z } from "zod";
+import { People } from "../types/people";
+import { decryptMatch } from "../utils/match";
 
 export const getAll: RequestHandler = async (req, res) => {
 	const { id_event } = req.params;
@@ -117,5 +119,44 @@ export const deletePerson: RequestHandler = async (req, res) => {
 		});
 	} else {
 		return res.json({ error: "Ocorreu um erro ao deletar este usuário" });
+	}
+};
+
+export const searchPerson: RequestHandler = async (req, res) => {
+	const { id_event } = req.params;
+	const searchPersonSchema = z.object({
+		cpf: z.string().transform((val) => val.replace(/\.|-/gm, "")),
+	});
+	const query = searchPersonSchema.safeParse(req.query);
+	if (!query.success) {
+		return res.json({ error: "Dados inválidos." });
+	} else {
+		const personItem = (await people.getPersonService({
+			idEvent: parseInt(id_event),
+			cpf: query.data.cpf,
+		})) as People;
+		if (personItem && personItem.matched) {
+			const matchId = decryptMatch(personItem.matched);
+			const personMatched = (await people.getPersonService({
+				idEvent: +id_event,
+				id: matchId,
+			})) as People;
+			if (personMatched) {
+				return res.json({
+					person: {
+						id: personItem.id,
+						name: personItem.name,
+					},
+					personMatched: {
+						id: personMatched.id,
+						name: personMatched.name,
+					},
+				});
+			} else {
+				return res.json({ error: "Ocorreu um erro." });
+			}
+		} else {
+			return res.json({ error: "Ocorreu um erro." });
+		}
 	}
 };
