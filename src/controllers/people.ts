@@ -89,3 +89,20 @@ export const updatePerson: RequestHandler = async (req, res) => {
 		}
 	}
 };
+
+export const deletePerson: RequestHandler = async (req, res) => {
+	const { id_event, id_group, id } = req.params;
+	const deletedPerson = await people.deletePersonService({
+		id_event: +id_event,
+		id_group: +id_group,
+		id: +id,
+	});
+	if (deletedPerson) {
+		return res.json({
+			success: "Pessoa deletada com sucesso",
+			person: deletedPerson,
+		});
+	} else {
+		return res.json({ error: "Ocorreu um erro ao deletar este usuário" });
+	}
+};

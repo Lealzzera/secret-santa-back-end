@@ -91,3 +91,12 @@ export const updatePersonService = async (
 		return { err };
 	}
 };
+
+type DeleteFilters = { id_event?: number; id_group?: number; id: number };
+export const deletePersonService = async (filters: DeleteFilters) => {
+	try {
+		return await prisma.eventPeople.delete({ where: filters });
+	} catch (err) {
+		return { err };
+	}
+};
