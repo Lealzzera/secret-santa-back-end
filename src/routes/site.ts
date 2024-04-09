@@ -10,5 +10,6 @@ router.get("/ping", (req, res) => {
 
 router.get("/events/:id", events.getEvent);
 router.get("/events/:id_event/search", people.searchPerson);
+router.get("/events-by-cpf/:cpf", events.getEventByCPF);
 
 export default router;

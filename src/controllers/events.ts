@@ -18,7 +18,19 @@ export const getEvent: RequestHandler = async (req, res) => {
 	if (eventItem) {
 		return res.json({ event: eventItem });
 	} else {
-		return res.json({ error: "Não foi encontrado nenhum evento" });
+		return res.json({ error: "Não foi encontrado nenhum evento." });
+	}
+};
+
+export const getEventByCPF: RequestHandler = async (req, res) => {
+	const { cpf } = req.params;
+	const eventItens = await events.getEventsByCPF(cpf);
+	if (eventItens) {
+		return res.json({ events: eventItens });
+	} else {
+		return res.json({
+			error: "Não foi encontrado nenhum evento com esse CPF.",
+		});
 	}
 };
 

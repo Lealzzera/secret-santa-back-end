@@ -22,6 +22,14 @@ export const getEventById = async (id: number) => {
 	}
 };
 
+export const getEventsByCPF = async (cpf: string) => {
+	try {
+		return await prisma.eventPeople.findMany({ where: { cpf } });
+	} catch (err) {
+		return err;
+	}
+};
+
 type EventsCreateData = Prisma.Args<typeof prisma.event, "create">["data"];
 export const createEvent = async (data: EventsCreateData) => {
 	try {
