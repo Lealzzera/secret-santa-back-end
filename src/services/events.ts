@@ -24,7 +24,17 @@ export const getEventById = async (id: number) => {
 
 export const getEventsByCPF = async (cpf: string) => {
 	try {
-		return await prisma.eventPeople.findMany({ where: { cpf } });
+		const idEvents = (
+			await prisma.eventPeople.findMany({ where: { cpf } })
+		).map(({ id_event }) => {
+			return id_event;
+		});
+		const eventList = await prisma.event.findMany({
+			where: {
+				id: { in: [...idEvents] },
+			},
+		});
+		return eventList;
 	} catch (err) {
 		return err;
 	}
